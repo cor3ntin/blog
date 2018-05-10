@@ -1,0 +1,26 @@
+baseurl = "https://cor3ntin.github.io"
+languageCode = "en-us"
+Title = "cor3ntin"
+# Copyright notice. This is displayer in the footer.
+copyright = ""
+theme = "kiss"
+Paginate = 7
+enableRobotsTXT = true
+pygmentsCodeFences = true
+pygmentsStyle = "pastie"
+googleAnalytics = "UA-119011218-1"
+disqusShortname="cor3ntin"
+
+[params.social]
+
+twitter = "cor3ntin"
+github = "cor3ntin"
+
+[params.opengraph.twitter]
+page = ""
+
+[taxonomies]
+tag ="tags"
+
+[params.assets]
+customCSS = ["custom.css"]
