@@ -5,7 +5,8 @@ date: 2018-01-29
 
 This is Part 3 on my series about cross-compilation. You can check out [part 1]({{< ref "helloworld_p1.md" >}}) 1 and [part 2]({{< ref "helloworld_p2.md" >}}) 2 first !
 
-![© [https://linuxnewbieguide.org](https://linuxnewbieguide.org)](https://cdn-images-1.medium.com/max/2000/1*MQojHnf60qojhdjPSz5Feg.png)*© [https://linuxnewbieguide.org](https://linuxnewbieguide.org)*
+
+{{< figure src="linux.png" title="linuxnewbieguide.org" >}}
 
 You cannot caters to the needs of Windows and Linux users while ignoring the third major, well, second actually, desktop operating system.
 
@@ -34,7 +35,7 @@ I’m not a lawyer. However it seems to me that Apple is actively forbidding cro
 
 You need an Apple ID, and so you need to create an account on apple.com. I don’t recall having a more terrible account creation experience in a while. The biggest offense is certainly their antiquated security policies.
 
-![How not to do account creation and security, courtesy of Apple.](https://cdn-images-1.medium.com/max/2000/1*N0jVAJ-usiFac8Pb78xt4w.png)*How not to do account creation and security, courtesy of Apple.*
+{{< figure src="form.png" title="How not to do account creation and security, courtesy of Apple" >}}
 
 They will then send you an email for verification, which is great. But instead of having a link in the email you will get a code that you cannot even paste and have to type in manually.
 
@@ -45,8 +46,7 @@ This turned into a “All software is terrible” rant again. I’m sorry.
 On a more positive note, someone already set up a nice collection of scripts to get you started with building an OsX toolchain on Unix. Works with Cygwin too !
 
 You will need to clone it.
-[**cor3ntin/osxcross**
-*osxcross - OS X cross toolchain for Linux, *BSD and Windows (Cygwin)*github.com](https://github.com/cor3ntin/osxcross/)
+[cor3ntin/osxcross - OS X cross toolchain for Linux, BSD and Windows](https://github.com/cor3ntin/osxcross/)
 
 It’s a fork from [Thomas Pöchtrager](https://github.com/tpoechtrager/osxcross)’s work which I had to patch up.
 
@@ -60,9 +60,9 @@ TBD files are pretty cool, they are a YAML representation of the symbols include
 
 So we will have to stick to a 10.11 SDK. It’s reasonable ! I went to the trouble of supporting xip files that are used to package the later versions of XCode. A format that is inspired by babushka dolls, but with compressed archives instead. Unfortunately, we can’t use anything more recent than XCode 7.3. I hope it will change soon !
 
-You can then run move the generatedMacOSX10.11.sdk.tar.xz to osxcross/tarballs then launch SDK_VERSION=10.11 ./osxcross/build.sh
+You can then run move the generatedMacOSX10.11.sdk.tar.xz to osxcross/tarballs then launch `SDK_VERSION=10.11 ./osxcross/build.sh`
 
-You will also need to run osxcross/build_llvm_dsymutil.sh
+You will also need to run `osxcross/build_llvm_dsymutil.sh`
 
 And in no time, you will have a complete toolchain for OSX, for both i386 and x86_64 ( even if you have absolutely 0 reason to build anything in 32 bits when targeting OSX ).
 
@@ -72,7 +72,7 @@ I’m properly impressed by the work that went into **osxcross**.
 
 Configuring QBS is rather straight forward, though there are some things to take care of.
 
-In osxcross/target/bin , run:
+In `osxcross/target/bin`, run:
 
     ln -s x86_64-apple-darwin15-ld ld
     cp osxcross-llvm-dsymutil x86_64-apple-darwin15-dsymutil
@@ -81,7 +81,21 @@ This will later help clang finding the proper tools. If you want to support mult
 
 Here is my profile configuration than you can adapt
 
-<iframe src="https://medium.com/media/44245da35c0a8f41d52f3ab2f24618af" frameborder=0></iframe>
+```ini
+qt-project\qbs\profiles\clang-osx-x86_64\qbs\architecture=x86_64
+qt-project\qbs\profiles\clang-osx-x86_64\qbs\toolchain=unix,clang,llvm,gcc
+qt-project\qbs\profiles\clang-osx-x86_64\qbs\targetOS=macos,darwin
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\compilerName=clang++
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\driverFlags=--prefix,/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/bin/
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\minimumMacosVersion=10.11
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\compilerPathByLanguage.cpp=/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/bin/x86_64-apple-darwin15-clang++
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\compilerPathByLanguage.c=/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/bin/x86_64-apple-darwin15-clang
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\toolchainInstallPath=/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/bin
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\systemIncludePaths=/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/SDK/MacOSX10.11.sdk/usr/include/c++/v1
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\libraryPaths=/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/SDK/MacOSX10.11.sdk/usr/lib,/home/cor3ntin/dev/cross-compilers/osx/osxcross/target/SDK/MacOSX10.11.sdk/usr/lib/system
+qt-project\qbs\profiles\clang-osx-x86_64\cpp\toolchainPrefix=x86_64-apple-darwin15-
+```
+
 
 The -prefix options tells clang where to find the proper ld(ld64) since the system linker is not suitable to link Mach-O application.
 
@@ -89,9 +103,11 @@ The rest is just giving qbs the proper search paths.
 
 Unfortunately, support for .plist in qbs is not portable, so you will encountered an error
 
-    ERROR: TypeError: Result of expression 'PropertyList' [[object Object]] is not a constructor.
-             at JavaScriptCommand.sourceCode
-             at Rule.prepare in /opt/qtcreator/share/qbs/modules/cpp/DarwinGCC.qbs:262:18
+```sh
+ERROR: TypeError: Result of expression 'PropertyList' [[object Object]] is not a constructor.
+            at JavaScriptCommand.sourceCode
+            at Rule.prepare in /opt/qtcreator/share/qbs/modules/cpp/DarwinGCC.qbs:262:18
+```
 
 Comment out the rule in DarwinGCC.qbs to fix the issue.
 
@@ -104,26 +120,28 @@ For now, in all our .qbs project files, we will put the following to disable bun
     }
     bundle.isBundle: false
 
-At that point, we are able to build the simple console Hello World seen in [Part one](https://medium.com/@corentin.jabot/a-c-hello-world-and-a-glass-of-wine-oh-my-263434c0b8ad)
+At that point, we are able to build the simple console Hello World seen in [part one]({{< ref "helloworld_p1.md" >}}).
 
-![](https://cdn-images-1.medium.com/max/2000/1*Gn3Ckk68e7zFRLS0o4MQVQ.png)
+{{< figure src="term1.png" >}}
 
-    # file helloworld
-    Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|WEAK_DEFINES|BINDS_TO_WEAK|PIE>
+```sh
+# file helloworld
+Mach-O 64-bit x86_64 executable, flags:<NOUNDEFS|DYLDLINK|TWOLEVEL|WEAK_DEFINES|BINDS_TO_WEAK|PIE>
+```
 
 But can it run ?
 
 ### Oh, darling !
 
 To run our windows application we used wine. There is a rather recent effort — It started in 2012 while WINE started in 1993; Windows 3.1 was just released !— to offer a translation layer, called ***darling.*** The project is far from being as mature and it doesn’t seems to have any kind of financial support. I hope it will catch on.
-[**Darling | macOS translation layer for Linux**
-*Darling - macOS translation layer for Linux*darlinghq.org](https://darlinghq.org/)
+[Darling - macOS translation layer for Linux](https://darlinghq.org/)
 
 You can clone and build darling, F[ollow the instructions on github](https://github.com/darlinghq/darling). On my machine, it took a bit under one hour for the whole thing. Once installed, it’s about 800MB. which is unsurprising as it is a complete system which comes with all the usual tools including g++, ruby, python, Perl, git, bash, swift, ssh…
 
 But, the build complete with no error, and amazingly, it works, and seems very reactive. Being more modern that wine, it is containerized !
 
-![Oh, Hi Mac](https://cdn-images-1.medium.com/max/2000/1*suKeIMzBppaO5urBAuF3ew.png)*Oh, Hi Mac*
+{{< figure src="term2.png" title="Oh, Hi Mac" >}}
+
 
 ### Adding magic with binfmt
 
@@ -135,7 +153,7 @@ Using a [kernel facility](https://www.kernel.org/doc/html/latest/admin-guide/bin
     :Mach-O 32b:M::\xce\xfa\xed\xfe::/usr/bin/darling_interpreter:
     :Mach-O FAT:M::\xca\xfe\xba\xbe::/usr/bin/darling_interpreter:
 
-/usr/bin/darling_interpreter is a script that launches *darling shell *— it should be executable.
+`/usr/bin/darling_interpreter` is a script that launches `darling shell` - it should be executable.
 
     #!/bin/bash
     /usr/local/bin/darling shell "$1"
@@ -146,7 +164,8 @@ After restarting the binfmt service ( systemctl restart systemd-binfmt ), we are
 
 Which mean we can do this
 
-![Any sufficiently advanced technology is indistinguishable from magic](https://cdn-images-1.medium.com/max/2000/1*BNLXvhVChYk8jCXEX_tlkA.png)*Any sufficiently advanced technology is indistinguishable from magic*
+{{< figure src="term3.png" title="Any sufficiently advanced technology is indistinguishable from magic" >}}
+
 
 Oh, and by the way, you can do the same thing for windows executables and WINE. Some distributions do that out of the box.
 
@@ -168,13 +187,91 @@ We can build Qt for mac, like we attempted for Windows. But it will work. Mac ha
 
 Alas, it means dealing with Qt’s complex build system. It took some time to hack the qmake build files. See, Qt makes the terrible assumption that all toolchain on osx involve xcode. We don’t have xcode.
 
-But once you bypass all the automatic probes and assumptions about what’s installed on the system….
+But once you bypass all the automatic probes and assumptions about what’s installed on the system...
 
-….you can get it to work !
+...you can get it to work !
 
     #configure -release -opensource -confirm-license -xplatform macx-cross-clang -skip qtwebengine -nomake examples -nomake tests    -prefix /home/cor3ntin/dev/cross-compilers/osx/qt5_10
 
-<iframe src="https://medium.com/media/c4cab04b5e055b16aaf937e1545b76fc" frameborder=0></iframe>
+```sh
+Building on: linux-g++ (x86_64, CPU features: mmx sse sse2)
+Building for: macx-cross-clang (x86_64, CPU features: cx16 mmx sse sse2 sse3 ssse3)
+Configuration: cross_compile sse2 aesni sse3 ssse3 sse4_1 sse4_2 avx avx2 avx512f avx512bw avx512cd avx512dq avx512er avx512ifma avx512pf avx512vbmi avx512vl compile_examples f16c largefile precompile_header rdrnd shani shared qt_framework rpath release c++11 c++14 c++1z concurrent dbus no-pkg-config reduce_exports stl
+Build options:
+  Mode ................................... release
+  Optimize release build for size ........ no
+  Building shared libraries .............. yes
+  Using C++ standard ..................... C++1z
+  Using ccache ........................... no
+  Using gold linker ...................... no
+  Using precompiled headers .............. yes
+  Using LTCG ............................. no
+  App store compliance ................... no
+Qt modules and options:
+  Qt Concurrent .......................... yes
+  Qt D-Bus ............................... yes
+  Qt D-Bus directly linked to libdbus .... no
+  Qt Gui ................................. yes
+  Qt Network ............................. yes
+  Qt Sql ................................. yes
+  Qt Testlib ............................. yes
+  Qt Widgets ............................. yes
+  Qt Xml ................................. yes
+Qt Network:
+  CoreWLan ............................... yes
+  .....
+Qt Gui:
+  FreeType ............................... yes
+    Using system FreeType ................ no
+  HarfBuzz ............................... yes
+    Using system HarfBuzz ................ no
+  Fontconfig ............................. no
+  Image formats:
+    GIF .................................. yes
+    ICO .................................. yes
+    JPEG ................................. yes
+      Using system libjpeg ............... no
+    PNG .................................. yes
+      Using system libpng ................ no
+  EGL .................................... no
+  OpenVG ................................. no
+  OpenGL:
+    Desktop OpenGL ....................... yes
+    OpenGL ES 2.0 ........................ no
+  Vulkan ................................. no
+  Session Management ..................... yes
+Qt Widgets:
+  GTK+ ................................... no
+  Styles ................................. Fusion macOS Windows
+Qt PrintSupport:
+  CUPS ................................... yes
+Qt QML:
+  QML interpreter ........................ yes
+  QML network support .................... yes
+Qt Quick:
+  Direct3D 12 ............................ no
+  AnimatedImage item ..................... yes
+  Canvas item ............................ yes
+  Support for Qt Quick Designer .......... yes
+  Flipable item .......................... yes
+  GridView item .......................... yes
+  ListView item .......................... yes
+  Path support ........................... yes
+  PathView item .......................... yes
+  Positioner items ....................... yes
+  ShaderEffect item ...................... yes
+  Sprite item ............................ yes
+Note: Also available for Linux: linux-clang linux-icc
+
+Note: No wayland-egl support detected. Cross-toolkit compatibility disabled.
+
+Qt is now configured for building. Just run 'make'.
+Once everything is built, you must run 'make install'.
+Qt will be installed into '/home/cor3ntin/dev/cross-compilers/osx/qt5_10'.
+
+Prior to reconfiguration, make sure you remove any leftovers from
+the previous build.
+```
 
 It was not quite the end of the road. Qt Widgets failed to build because of missing dependencies. QtLocation failed to build because the libc++ headers were too old or broken ( I fixed that by copying the latest libc++ version within the OSX SDK. It worked). Then QtLocation complained because std::auto_ptr was not defined so I hacked a few headers.
 
@@ -182,11 +279,12 @@ I tried to get qwebengine(chromium ) to build, but it uses another build system 
 
 But in the end most of Qt did build.
 
-![It took me a few hours but I got Qt !](https://cdn-images-1.medium.com/max/3682/1*dAkSjuQcOvUjOJvLXoonmQ.png)*It took me a few hours but I got Qt !*
+{{< figure src="term4.png" title="It took me a few hours but I got Qt compiling!" >}}
 
 And what we have then, is something quite interesting. The binaries are natives Linux ELF, while the frameworks and libraries are Macho-O. That will be handy in a minute.
 
-![Hello, I’m a Mac — And I’m a PC. And I am a Mac too. — What ?](https://cdn-images-1.medium.com/max/3288/1*Zk2hm9b7COXzVReuMjp8vg.png)*Hello, I’m a Mac — And I’m a PC. And I am a Mac too. — What ?*
+
+{{< figure src="term5.png" title="Hello, I’m a Mac — And I’m a PC. And I am a Mac too. — What ?" >}}
 
 Qt is a big piece of software making full use of the underlying system capabilities, in term of OS integration. If we can build that, we can build almost anything.
 
@@ -198,37 +296,36 @@ Eventually, once I gave qbs what it expected to understand that we were dealing 
 
 Which created the right profiles and modules. I cleaned up my profiles manually to merge clang-osx and osx-x64-qt510
 
-And then we can compile or magnificent ***Hello World ***app !
+And then we can compile or magnificent *Hello World* app !
 
-![Compiling an OSX application based on Qt on Linux, using qbs : check](https://cdn-images-1.medium.com/max/2748/1*tn9Qx7yNliDAMRNRtr22Fw.png)*Compiling an OSX application based on Qt on Linux, using qbs : check*
+{{< figure src="term6.png" title="Compiling an OSX application based on Qt on Linux, using qbs : check" >}}
+
 
 What now ?
 
 Well, we have a complete toolchain, maybe we can check some things ?
 
-Using otool -L , the osx equivalent of ldd we can assert that we indeed link to some libraries
 
-![](https://cdn-images-1.medium.com/max/2764/1*vzAw8ry7-fg1nXSwZNH2cQ.png)
-
-We can use other tools. such as nm or strings or the dreaded install_name_tool
+{{< figure src="term7.png" title="Using otool -L , the osx equivalent of ldd we can assert that we indeed link to some libraries" >}}
+We can use other tools. such as nm or strings or the dreaded `install_name_tool`.
 
 Unfortunately, Darling can’t handle anything remotely graphical yet, So we need a Mac to actually launch our app.
 
 A real mac; It is illegal to visualize Mac OSX, unless it’s on a mac. Some words comes to mind. Imagine my French.
 
-Let’s talk about the mac. *The Mac. *You probably know the one. Most companies have it.
+Let’s talk about the mac. *The Mac*. You probably know the one. Most companies have it.
 
-![This Is A True Story.](https://cdn-images-1.medium.com/max/4000/1*EI7a9DGmUvtstV6c1YqkTw.png)*This Is A True Story.*
+{{< figure src="mini.png" title="This is a true story. True." >}}
 
-It used to belong to Bob. It’s Bob’s mac. But then, 5 years ago, Bob died, so T*he Mac* was offered to Alice. Alice left the company soon after - Pure coincidence, probably.
+It used to belong to Bob. It’s Bob’s mac. But then, 5 years ago, Bob died, so *The Mac* was offered to Alice. Alice left the company soon after - Pure coincidence, probably.
 
-Yet *The Mac* was always *The Mac. *It has no master. It has no puppet either. You can connect to it at ssh bob@mac.yourcompany.com. The password is simply pass. It’s not in the same LAN as the other servers running on virtual machines somewhere. It’s not administered in anyway, presenting a convenient back door in an otherwise tightly secured network.
+Yet *The Mac* was always *The Mac*. It has no master. It has no puppet either. You can connect to it at ssh bob@mac.yourcompany.com. The password is simply pass. It’s not in the same LAN as the other servers running on virtual machines somewhere. It’s not administered in anyway, presenting a convenient back door in an otherwise tightly secured network.
 
 When it’s running. Sometime it’s just down for days at a time. It’s not just like people don’t care, they also don’t know where it’s physically located. A mac mini is easy to loose. Under someone desk, wedging an old chair, used as a coffee table.
 
 Last time it crashed, you had to track it down for three days straight, like chasing after a big cat in the mountains. You even tried to call Bob’s widow.
 
-You finally found *the mac *sandwiched between Carol’s screen and the Oxford Dictionary. “It was the prefect height!”, objected Carol when you took back her 800$ monitor stand. You traded *the mac* for an old IKEA catalog that Carol found to be as practical, if not more, than a Mac-Mini.
+You finally found *the mac* sandwiched between Carol’s screen and the Oxford Dictionary. “It was the prefect height!”, objected Carol when you took back her 800$ monitor stand. You traded *the mac* for an old IKEA catalog that Carol found to be as practical, if not more, than a Mac-Mini.
 
 You plugged *the mac* back in and diligently updated it it to the last version of OSX, “Cougar” (or something, it’s hard to keep track).
 
@@ -238,13 +335,13 @@ But truth is, *the mac* is doing an important job. Running all the tasks that ca
 
 Maybe life would have been different if we could virtualize OSX.
 
-I do happen to have a 2011 mac-mini, gift of a former employer. Its life was a a bit different than *the mac’s. *It was never loved and spent the last two years in a box. It only gets to see the life of the day for the needs of this article. It is also the reason why I’m 4 days late in my publication schedule. I tried to install High Sierra — Grey screen; I had to reformat, install Lion, then install El Captain. So El captain is what we will be using. It features a whooping 2GB of memory, the system using 3/4 of that.
+I do happen to have a 2011 mac-mini, gift of a former employer. Its life was a a bit different than *the mac* ’s. It was never loved and spent the last two years in a box. It only gets to see the life of the day for the needs of this article. It is also the reason why I’m 4 days late in my publication schedule. I tried to install High Sierra — Grey screen; I had to reformat, install Lion, then install El Captain. So El captain is what we will be using. It features a whooping 2GB of memory, the system using 3/4 of that.
 
 You should enable VNC, remote share and SSH in the systems parameters of your mac.
 
 This article is starting to be a bit long. So here is a quick visual summary of the work achieved so far:
 
-![Definitively improving our productivity.](https://cdn-images-1.medium.com/max/4954/1*7CT7_Xu6EMy1_NPsFx-JcQ.png)*Definitively improving our productivity.*
+{{< figure src="jobs.png" title="Definitively improving our productivity" >}}
 
 We should stop fooling around.
 
@@ -252,19 +349,20 @@ We should stop fooling around.
 
 * Copy your helloworld-gui on the machine, again, using scp -r .
 
-* Our cross-compiled build of Qt does not contain macdeployqt. You could get it by installing the official version of Qt on the mac directly. To avoid doing that and to not have to deal with [the hairy mess of install_name_tool](http://doc.qt.io/qt-5/osx-deployment.html), we can set up DYLD_FALLBACK_FRAMEWORK_PATH to point to the folder containing all the Qt*.framework . DYLD_FALLBACK_FRAMEWORK_PATH is somewhat sane but may not work and has some associated security risks. Please don’t use it in shipped applications.
+* Our cross-compiled build of Qt does not contain macdeployqt. You could get it by installing the official version of Qt on the mac directly. To avoid doing that and to not have to deal with [the hairy mess of install_name_tool](http://doc.qt.io/qt-5/osx-deployment.html), we can set up `DYLD_FALLBACK_FRAMEWORK_PATH` to point to the folder containing all the Qt*.framework . `DYLD_FALLBACK_FRAMEWORK_PATH` is somewhat sane but may not work and has some associated security risks. Please don’t use it in shipped applications.
 
-    export DYLD_FALLBACK_FRAMEWORK_PATH=/Users/cor3ntin/dev/cross-compilation/qt5_10/lib
+    export `DYLD_FALLBACK_FRAMEWORK_PATH`=/Users/cor3ntin/dev/cross-compilation/qt5_10/lib
 
 * Like on windows, we need to provide a qt.conf file next to our helloworld-gui, to tell Qt where to load its plugins from ( the application will simply not run otherwise ). Mine looks like that
 
-    [Paths]
-    Prefix=/Users/cor3ntin/dev/cross-compilation/qt5_10/
-    Plugins=plugins
+```ini
+[Paths]
+Prefix=/Users/cor3ntin/dev/cross-compilation/qt5_10/
+Plugins=plugins
+```
+Now, connected to the mac through ssh, you can execute your application and it will appear on the mac screen and on the remote display / VNC session.
 
-Now, connected to the mac through sshyou can execute your application and it will appear on the mac screen and on the remote display / VNC session
-
-![It feels like we climbed a mountain !](https://cdn-images-1.medium.com/max/3502/1*gkJ8vOuh1zRdE_e2M4vkOw.png)*It feels like we climbed a mountain !*
+{{< figure src="mountain.png" title="It feels like we climbed a mountain !" >}}
 
 ## Can we make all that legal ?
 
@@ -282,35 +380,35 @@ There are a few issues with it
 
 * They do not have a build script to actually build an SDK and only install the .dylib . this could probably be fixed rather easily.
 
-* They have a limited set of frameworks and that set is insufficient to build Qt. Qt uses the following framework, those prefixed by !!!! are missing in Darling
+* They have a limited set of frameworks and that set is insufficient to build Qt. Qt uses the following framework, those prefixed by 🍎 are missing in Darling
 
     * AppKit
     * ApplicationServices
-    !!!! AssetsLibrary
+    * 🍎 AssetsLibrary
     * AudioToolbox
-    !!!! AudioUnit
-    !!!! AVFoundation
-    !!!! Carbon
+    * 🍎 AudioUnit
+    * 🍎 AVFoundation
+    * 🍎 Carbon
     * Cocoa
-    !!!! CoreAudio
-    !!!! CoreBluetooth
+    * 🍎 CoreAudio
+    * 🍎 CoreBluetooth
     * CoreFoundation
     * CoreGraphics
-    !!!! CoreLocation
-    !!!! CoreMedia
-    !!!! CoreMotion
+    * 🍎 CoreLocation
+    * 🍎 CoreMedia
+    * 🍎 CoreMotion
     * CoreServices
     * CoreText
     * CoreVideo
-    !!!! fftreal
+    * 🍎 fftreal
     * Foundation
     * ImageIO
-    !!!! IOBluetooth
+    * 🍎 IOBluetooth
     * IOKit
-    !!!! OpenCL
+    * 🍎 OpenCL
     * QuartzCore
     * Security
-    !!!! SystemConfiguration
+    * 🍎 SystemConfiguration
 
 * You could possibly compile the Qt Framework on OSX and then copy them to your Linux machine, it would probably work in most cases.
 
