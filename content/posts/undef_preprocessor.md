@@ -113,7 +113,7 @@ If you need lazy evaluation of the function arguments, use a lambda. Here is a s
 
 ### 3. Abstract away the portability concerns.
 
-Properly isolating the platform-specific nastiness in separate files, separate libraries and methods should reduce the occurrence of #ifdef blocks in your code. And while it does not solve the issues I mentioned above you are less likely to want to rename or otherwise transform a platform-specific symbol while not working on that platform.
+Properly isolating the platform-specific nastiness in separate files, separate libraries and methods should reduce the occurrence of `#ifdef` blocks in your code. And while it does not solve the issues I mentioned above you are less likely to want to rename or otherwise transform a platform-specific symbol while not working on that platform.
 
 ### **4. Limit the number of variations your software can have.**
 > Should that dependency really be optional?
@@ -330,11 +330,11 @@ We first create a constexpr block with `constexpr { }`. This is part of The meta
 
 Within the constexpr block we define a macro log. Notice that macro are not functions. They expand to code, they don’t return anything nor do they exist on the stack. log is an identifier that can be qualified and can not be the name of any other entity in the same scope. Syntactic macros obey the same lookup rules as all other identifier.
 
-They use the `->` injection operator. `->` can be used to describe all code injection related operations without conflicting with its current uses. In your case since log is a syntactic macro which is a form of code injection, we define the macro with `log->(){....}`.
+They use the `->` injection operator. `->` can be used to describe all code injection related operations without conflicting with its current uses. In this case since `log` is a syntactic macro which is a form of code injection, we define the macro with `log->(){....}`.
 
 The body of the syntactic macro is itself a constexpr block which may contain any C++ expression that can be evaluated in a constexpr context.
 
-It may contain 0, one or more **injection statements **denoted by `-> {}` . An injection statement creates a code fragment and immediately inject it at the point of invocation, which is, in the case of the syntactic macro, the location where the macro is expanded from.
+It may contain 0, one or more **injection statements** denoted by `-> {}` . An injection statement creates a code fragment and immediately inject it at the point of invocation, which is, in the case of the syntactic macro, the location where the macro is expanded from.
 
 A macro can either inject an expression or 0 or more statements. A macro that inject an expression can only be expanded where an expression is expected and reciprocally.
 
@@ -344,7 +344,7 @@ You can pass any arguments to a syntactic macro that you could pass to a functio
 
 However, you can also pass reflections on an expression. That suppose being able to take the reflection of arbitrary expressions. A reflection on an expression ehas a type corresponding to decltype(e).
 
-In term of implementation, in the above example above std::meta::expression<char*> is a concept matching any reflection on an expression which type is char*.
+In term of implementation, in the above example above `std::meta::expression<char*>` is a concept matching any reflection on an expression which type is `char*`.
 
 The last piece of magic when evaluating a macro is that expressions are implicitly converted to their reflection before expansion.
 
