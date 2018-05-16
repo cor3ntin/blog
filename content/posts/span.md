@@ -82,7 +82,7 @@ That also includes the lexicographical comparators and the `find*()` methods. Do
 
 For the time being, it's best to see `std::*string` as opaque containers of bytes. Like you would of a vector.
 
-Alas `string`, being the favorite child, got to have it's own non-owning wrapper 3 years before anyone else. So in C++17, was introduced ~~`string_span`~~.
+Alas `string`, being the favorite child, got to have its own non-owning wrapper 3 years before anyone else. So in C++17, was introduced ~~`string_span`~~.
 Nope, it is actually `string_view`.
 
 It's a `string`, it's a `span`. It's the api of both mixed together. But it's called a `view`.
@@ -144,7 +144,7 @@ That was back in 2015 when `span` was still called `array_view`.
 
 Unfortunately, some people now think the term `view` somehow implies immutable.
 
-But the only reason one might think so boils down to `string` hijacking a vocabulary type all for it self.
+But the only reason one might think so boils down to `string` hijacking a vocabulary type all for itself.
 And guess what's the last thing you should do to a utfX encoded string? Randomly slicing it into views at code unit/bytes boundary.
 
 In the *Ranges TS*, nothing either implies views are immutable:
@@ -177,7 +177,7 @@ static_assert(std::experimental::ranges::Range<gsl::span<int>>);
 We can refine that further, `span` is a **contiguous range**: A range whose elements are contiguous in memory.
 
 While currently neither the notion of `contiguous iterator` or the `ContiguousRange` concept are part of C++20, [there is a proposal](https://wg21.link/P0944).
-Weirdly, I couldn not find a proposal for `ContiguousRange`. Fortunately, it is implemented in `cmcstl2` so we can test for it.
+~~Weirdly, I couldn not find a proposal for `ContiguousRange`~~[^fix_contiguous_range]. Fortunately, it is implemented in `cmcstl2` so we can test for it.
 
 
 {{< ce_fragment >}}
@@ -459,7 +459,7 @@ aqv
 ```
 
 Meanwhile, `std::span` is collapsing the entire group theory into 2 characters.
-And of course there is only so much meaning one can imbue to a 2 bytes token.
+And of course there is only so much meaning one can imbue to a 2-byte token.
 
 A lot of arguing between committee members has been about whether `operator==`
 should compare the identity (whether two span points to the same underlying data),
@@ -564,4 +564,4 @@ To conclude this short introduction of `span`, I will leave you with this photo 
 {{< figure src="horse.jpg" title="Span" >}}
 
 
-
+[^fix_contiguous_range]: I originally mentionned incorrectly that `ContiguousRange` was not proposed for inclusion in the C++ Standard. [This is incorrect](https://wg21.link/P0944)
