@@ -469,7 +469,7 @@ There are supporters of both meanings and they are both ~~wrong~~ right.
 No really, I believe they are _wrong_. (I'm gonna make so many friends with that article...).
 
 If both sides of the argument make as much sense as the other, it's because there isn't an answer.
-It starts to be about made up arguments to back up one's personal preferences which usually is somewhere between thoose two extremes:
+It starts to be about made up arguments to back up one's personal preferences which usually is somewhere between those two extremes:
 
  * We should abide by the type categories and the standard library correctness otherwise we will inevitably blow our own foot.
  * We should meet user expectations otherwise they will blow their foot and then have our heads.
