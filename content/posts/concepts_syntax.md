@@ -4,6 +4,13 @@ date: 2018-06-13T11:32:09+02:00
 draft: true
 ---
 
+<div style="font-size: larger; padding:1em; margin-top:2em; margin-bottom:2em; background:#FFF2DB; color:#666">
+
+<p> Please take the quick survey on concept syntax at the <a href="#survey"> end of this article</a>.
+</p>
+
+</div>
+
 Did you know that the concept TS was merged into the Working Draft in July 2017, in sorry Toronto?
 And we are a planck length away from merging the Range TS in C++20 as well, including a few goodies such as projections,
 contiguous ranges/iterators and ranges adaptors?
@@ -94,6 +101,20 @@ It turns out the design space is ridiculously complicated, so let me try to desc
 ## 0 - The meaning of void f(ConceptName a, ConceptName b)
 
 Up until last year, some people argued that given `void f(ConceptName a, ConceptName b)`, `a` and `b` should resolve to the same type.
+
+This is a quote from the [original Concept-Lite proposal](https://wg21.link/n3701):
+
+> What if we need two argument types of the same concept? Consider <br/>
+> `void sort(Random_access_iterator p, Random_access_iterator q);` <br/>
+> For this to make sense, `p` and `q` must be of the same (random-access iterator)
+> type, and that is the rule. By default, if you use the same constrained parameter
+> type name for two arguments, the types of those arguments must be the same.
+> We chose to make repeated use of a constrained parameter type name imply
+> “same type” because that (in most environments) is the most common case,
+> it would be odd to have an identifier used twice in a scope have two different
+> meanings, and the aim here is to optimize for terse notation of the simplest case.
+
+
 Fortunately, [this issue was resolved](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0464r2.html),
 and there is now a tacit(?) consensus that each parameter should be deducted separately and be of potentially different types.
 
@@ -273,11 +294,16 @@ A tony table is worth a thousand words
 <div style="margin:auto">
 <table>
 <tr>
-    <th> C++20 draft </th>
-    <th> Concept Lite </th>
-    <th> Bjarne </th>
-    <th> In Place </th>
-    <th> Adjective </th>
+    <th> <a href="http://eel.is/c++draft/temp.param#nt:constrained-parameter">C++20 draft</a>
+    </th>
+    <th> <a href="https://wg21.link/n3701">Concept Lite</a> </th>
+    <th> <a href="https://wg21.link/p1079">Bjarne's "minimal solution"</a> </th>
+    <th> <a href="https://wg21.link/p0745r1">In Place Concept</a> </th>
+    <th> Adjective <sup><a href="#fn1" id="ref1">1</a></sup>
+        <a href="https://wg21.link/p0807">P0807</a>
+        <a href="https://wg21.link/p0791">P0791</a>
+        <a href="https://wg21.link/p0873">P0873</a>
+    </th>
 </tr>
 <tr>
     <th colspan="5" style="text-align:center"> Simple function </th>
@@ -466,7 +492,7 @@ void foo(A & a, B & b);</pre>
 </tr>
 
 <tr>
-    <th colspan="5" style="text-align:center"> Identical types </th>
+    <th colspan="5" style="text-align:center"> Identical types  <sup><a href="#fn2" id="ref2">2</a></sup> </th>
 </tr>
 <tr>
 <td>
@@ -486,6 +512,31 @@ void foo(A & a, A & b);</pre>
     🚫 Same syntax as the working draft
 </td>
 </tr>
+
+
+<tr>
+    <th colspan="5" style="text-align:center"> Identical constraints on different types  <sup><a href="#fn2" id="ref2">2</a></sup> </th>
+</tr>
+<tr>
+<td>
+    <pre>template&lt;Container A, Container B>
+void foo(A & a, B & b);</pre>
+</td>
+<td>
+    🚫
+</td>
+<td>
+    <pre>template
+void foo(Container & a, Container & b);</pre>
+</td>
+<td>
+    <pre>void foo(Container{B} & a, Container{B} & b);</pre>
+</td>
+<td>
+    <pre>void foo(Container auto & a, Container auto & b);</pre>
+</td>
+</tr>
+
 
 <tr>
     <th colspan="5" style="text-align:center"> Unconstrained type </th>
@@ -511,7 +562,7 @@ void foo(Foo & a);</pre>
 
 
 <tr>
-    <th colspan="5" style="text-align:center"> Multiple constraints </th>
+    <th colspan="5" style="text-align:center"> Multiple constraints <sup><a href="#fn3" id="ref3">3</a></sup></th>
 </tr>
 <tr>
 <td>
@@ -534,6 +585,36 @@ void foo(Foo & a);</pre>
 foo(Iterable Container auto & a);<pre>
 </td>
 </tr>
+
+
+<tr>
+    <th colspan="5" style="text-align:center"> Return value</th>
+</tr>
+<tr>
+<td>
+    <pre>template &lt;Containter C>C foo();</pre>
+    <pre>template &lt;Containter C>auto foo() ->C;</pre>
+</td>
+<td>
+    <pre>Containter foo();</pre>
+    <pre>auto foo() -> Container;</pre>
+</td>
+<td>
+    <pre>Containter foo();</pre>
+    <pre>auto foo() -> Container;</pre>
+</td>
+<td>
+    <pre>Containter{} foo();</pre>
+    <pre>auto foo() -> Container{};</pre>
+</td>
+<td>
+    <pre>Containter auto foo();<sup><a href="#fn4" id="ref4">4</a></sup></pre>
+    <pre>auto foo() -> Container auto;<sup><a href="#fn4" id="ref4">4</a></sup></pre>
+    <pre>auto foo() -> Container;</pre>
+</td>
+</tr>
+
+
 
 <tr>
     <th colspan="5" style="text-align:center"> Local variables type checking</th>
@@ -614,13 +695,24 @@ static_assert&lt;Container&lt;decltype(c)>()>;</pre>
     🚫
 </td>
 <td>
-    🚫
+    Yes, but confusing
 </td>
 <td>
     &#x2714;
 </td>
 </tr>
 </table>
+
+<span id="fn1"><a href="#ref1" title="Jump back">1</a>. There have been several adjective syntax papers (I'm the author of one of them).
+This table attempt to aggregate them.</span>
+<br/>
+<span id="fn2"><a href="#ref2" title="Jump back">2</a>.
+There are other ways to achieve the same result, including using `decltype` but these solutions do not behave the same way in an overload set.</span>
+<br/>
+<span id="fn3"><a href="#ref3" title="Jump back">3</a>. Proposed as a possible extension.</span>
+<br/>
+<span id="fn4"><a href="#ref4" title="Jump back">4</a>. In a return value, `auto` could be optional (no forwarding reference issue) and is offered as a way to maintain a coherent consistency story.</span>
+
 </div>
 </div>
 
@@ -657,7 +749,8 @@ Whis this is somewhat logical, I don't think it will be obvious to beginners.
 the syntax will not be familiar to C++ developers or people coming from another language.
 
 I also dislike that it introduces dependencies between separate declarations:
-Take `void f(C{A} _1, A _2)`:
+Take <br/>
+    `void f(C{A} _1, A _2)`:
 In this example, the declaration of `_2` depends on the declaration of `_1`.
 Of course, this is achievable already with `decltype`, but introducing a core syntax will make this pattern more widespread and
 it makes refactoring and tooling harder.
@@ -681,9 +774,24 @@ more trap into the language.
 But because it focuses on making the simple case simple, it is a bit more verbose than other proposed syntax and a `require` clause is necessary
 to specify constraints on multiple types.
 
+# Conclusion
 
+I tried to stay neutral, but it's no secret that I like the adjective syntax the best.
+It has a good story for forwarding references, NTNTTP and is consistent with the rest of the language and easy to teach. It also has no trap or ambiguities.
 
+But each proposed syntax has both merits and drawbacks so hopefully, the most popular one will prevail!
+To this end, I set up a survey.
 
+# Survey
+
+This is very informal but it may influence me or others to write papers accordingly.
+And I'm very curious to know what your opinions on that matter so please take that survey.
+It's hopefully short enough, and if you have more to say, leave a comment!
+
+I hope you enjoyed this article!
+
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdWtc712Hp479exxo6j2aDcWjRrsxP2ORzpoxub2rMv5BB0vA/viewform?embedded=true" width="800" height="2000" frameborder="0" marginheight="0" marginwidth="0">
+</iframe>
 
 
 
