@@ -11,7 +11,7 @@ date: 2018-06-13T11:32:09+02:00
 </div>
 
 Did you know that the Concept TS was merged into the Working Draft in July 2017, in Toronto?
-And we are a planck length away from merging the Range TS in C++20 as well, including a few goodies such as projections,
+And we are a Planck length away from merging the Range TS in C++20 as well, including a few goodies such as projections,
 contiguous ranges/iterators and ranges adaptors?
 We also added a bunch of general-purpose concepts in the `std` namespace in Rapperswil.
 
@@ -507,8 +507,7 @@ void foo(A & a, A & b);</pre>
     🚫 Same syntax as the working draft
 </td>
 <td>
-    <pre>void foo(Container{A} & a, A & b);</pre>
-    <pre>void foo(Container{A} & x, C{A} & b);</pre>
+    <pre>void foo(Container{A} & x, Container{A} & b);</pre>
 </td>
 <td>
     🚫 Same syntax as the working draft
@@ -552,7 +551,7 @@ void foo(Foo & a);</pre>
     <pre>void foo(auto & a);</pre>
 </td>
 <td>
-    <pre>void foo(auto & a);</pre>
+    <pre>template void foo(auto & a);</pre>
 </td>
 <td>
     <pre>void foo(auto & a);</pre>
@@ -602,8 +601,8 @@ foo(Iterable Container auto & a);<pre>
     <pre>auto foo() -> Container;</pre>
 </td>
 <td>
-    <pre>Container foo();</pre>
-    <pre>auto foo() -> Container;</pre>
+    <pre>template Container foo();</pre>
+    <pre>template auto foo() -> Container;</pre>
 </td>
 <td>
     <pre>Container{} foo();</pre>
