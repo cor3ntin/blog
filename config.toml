@@ -24,3 +24,6 @@ tag ="tags"
 
 [params.assets]
 customCSS = ["custom.css"]
+
+[blackfriday]
+  extension = ["footnotes"]
