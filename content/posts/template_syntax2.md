@@ -1,6 +1,7 @@
 ---
 title: "Concept and template syntax take 836"
 date: 2018-07-07T11:16:27+02:00
+draft: true
 ---
 
 # The return of the adjective syntax
@@ -331,7 +332,7 @@ having a shorter syntax for template parameters would be well received!
 
 ## Motivation, Rationale and design goals.
 
-I propose that the _template parameter list_ can be put immediately after a type name in types and function declaration, 
+I propose that the _template parameter list_ can be put immediately after a type name in types and function declaration,
 instead of before the declaration. The `template` keyword is not used.
 
 ### Why?
@@ -355,7 +356,7 @@ will be better. Note that the syntax for constrained template parameters propose
 
 ### Is the world ready for a terser syntax?
 
-I don't know, it certainly looks that way. 
+I don't know, it certainly looks that way.
 In any case, if we are ready for an abbreviated syntax such as P1141, we should be willing to get rid of `template` in more places.
 
 ### What about type introducers such as proposed by the "Concept In-Place Syntax" proposal?
@@ -367,14 +368,14 @@ Here, I propose a shorter syntax to introduce types that do not require a new sy
 
 ### Can it be made terser still?
 
-Yes, you can use `void f<class T>(){};` instead of `void f<typename T>(){};` 
+Yes, you can use `void f<class T>(){};` instead of `void f<typename T>(){};`
 as these two keywords have had the same meaning in this context for quite a while.
 
 ### Nothing terser?
 
-I tend to think that terseness is a noble goal. Up to a point. 
+I tend to think that terseness is a noble goal. Up to a point.
 Cramming too much information in too few keywords is done at the cost of teachability, consistency, and maintainability.
-These properties are tied together and at some point terseness becomes detrimental. 
+These properties are tied together and at some point terseness becomes detrimental.
 
 ## Functions and lambda
 
@@ -537,29 +538,36 @@ In the Working Draft, there are two places where one can put a require clause.
 After the template parameter list preceding the declaration, and before trailing return type.
 Quoting the standard:
 
-```
+```cpp
 void f1(int a) requires true;               // OK
 auto f2(int a) -> bool requires true;       // OK
-auto f3(int a) requires true -> bool;       // error: requires-clause precedes trailing-return-type
+// error: requires-clause precedes trailing-return-type
+auto f3(int a) requires true -> bool;
 ```
 
-And, as I'm proposing to have a second place to put a template parameter list, I wonder : 
+And, as I'm proposing to have a second place to put a template parameter list, I wonder :
 Is it reasonable or useful to have two places where to put requires clauses? At the same time?
 
 I am not, however, proposing to change that.
 There can be a trailing-requires-clause and a requires clauses after the template parameters list.
 
-```
-template <bool b = true> requires true bool f() -> requires true   // OK in the WD: truer syntad have never been worded.
-[]<bool b = true> requires true () -> bool requires true {};       // OK in the WD
-bool f<bool b = true> requires true () -> requires true {}         // Ok, as proposed
+```cpp
+// OK in the WD: truer syntad have never been worded.
+template <bool b = true> requires true bool f() -> requires true
+// OK in the WD
+[]<bool b = true> requires true () -> bool requires true {};
+// Ok, as proposed
+bool f<bool b = true> requires true () -> requires true {}
 ```
 
 Because we do not allow 2 template parameter lists, the following are ill-formed:
-```
-template <bool a> bool f<bool b>();                                           // Ill-formed (one template parameters list is enough)
-template <bool a> requires true bool f<bool b> requires true();               // Ill-formed !
-template <bool a> requires true bool f<bool b> requires true() requires true; // Stop it
+```cpp
+// Ill-formed (one template parameters list is enough)
+template <bool a> bool f<bool b>();
+// Ill-formed !
+template <bool a> requires true bool f<bool b> requires true();
+// Stop it
+template <bool a> requires true bool f<bool b> requires true() requires true;
 ```
 
 
@@ -568,8 +576,8 @@ template <bool a> requires true bool f<bool b> requires true() requires true; //
 The function `template <typename T> T make_t();` can be rewritten `auto make_t<typename T>() -> T;`.
 But should we allow `T make_t<typename T>();` to be well-formed, ie to refer to a not-yet-declared type?
 
-This would require delaying the parsing of the return type of all 
-functions (except those that are preceded by a _template-head_ ), until after the parsing of 
+This would require delaying the parsing of the return type of all
+functions (except those that are preceded by a _template-head_ ), until after the parsing of
 the _template-parameter-list_ that may be present after the function name.
 
 While I think this could be implemented, the complexity it would add may not be worth the trouble.
@@ -588,10 +596,10 @@ template <class T1> class A {
         template <class T3> class C {};
     };
 };
-```
-,
 
 ```
+This specialization
+```cpp
 template <>
 template <>
 template <>
@@ -604,7 +612,8 @@ In fact, a compiler can diagnostic a missing `template <>`.
 
 {{< ce >}}
 template <typename X> class D{};
-class D<int>{};  //error: an explicit specialization must be preceded by 'template <>'
+class D<int>{};
+//error: an explicit specialization must be preceded by 'template <>'
 {{< /ce >}}
 
 
@@ -615,14 +624,14 @@ parameter or specialize `Foo` for `ìnt`.
 Given the outcomes of numerous recent syntax-related discussions, I do expect that people will want a way to make that distinction.
 
 But the compiler would also have to do some look ahead to distinguish declarations from specialization with nested types.
-The following example was provided by Tony V.E. While unambiguous, it requires a bit more look ahead: 
+The following example was provided by Tony V.E. While unambiguous, it requires a bit more look ahead:
 
 ```
 struct T { ... };
 Bar foo<typename T::type>(int t);
 ```
 
-I think it might be reasonable not to allow specialization using this new syntax as a first approach, 
+I think it might be reasonable not to allow specialization using this new syntax as a first approach,
 specialization can still be achieved using the current syntax.
 
 
