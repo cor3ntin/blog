@@ -9,7 +9,7 @@ draft: true
 A couple of weeks ago, I made an article on concept terse syntax and I thank the people
 who took the time to take the poll, it was quite revealing.
 
-And since then a new paper, [P1141 - Yet another approach for constrained declarations](wg21.link/P1141)
+And since then a new paper, [P1141 - Yet another approach for constrained declarations](https://wg21.link/P1141)
 came out. Despite the name, it's pretty much the Adjective syntax, repacked with an impressive authors list
 including Herb Sutter (author of the In-Place syntax proposal), Bjarne Stroustrup and Gabriel Dos Reis (authors of "minimal solution"
 proposals) and Thomas Köppe (author of one of the adjective syntax proposal), so it would seem that we are converging towards a solution
@@ -73,7 +73,7 @@ Most of the issues have been discussed already, so I am sure they are the fruit 
 
 ### Constrained non type parameter.
 
-[P1141 - Yet another approach for constrained declarations](wg21.link/P1141)] proposes 2 new syntaxes for template parameters
+[P1141 - Yet another approach for constrained declarations](https://wg21.link/P1141)] proposes 2 new syntaxes for template parameters
 
 ```cpp
 <Sortable Foo>       //A type Foo which satisfies Sortable
@@ -112,7 +112,7 @@ Which bring us to the next point
 
 ### typename
 
-I think one of the issues with the first adjective syntax papers is that people found `<ConceptName typename T>` overly verbose and a time where the committee was [down with typename](wg21.link/0634).
+I think one of the issues with the first adjective syntax papers is that people found `<ConceptName typename T>` overly verbose and a time where the committee was [down with typename](https://wg21.link/0634).
 And of course, omitting `typename` is a good default as Bjarne S notices type parameter probably constitute 99% of cases.
 
 So, it's very fortunate that we don't have to specify `typename` systematically.
@@ -175,7 +175,7 @@ And, it's important to remember when talking about syntax that code is meant to 
 
 So we are left of the following choices
 
-* Do the `template` dance : template <typename T> const T & min(const T & a, const T & b);`
+* Do the `template` dance : template &lt;typename T> const T & min(const T & a, const T & b);`
 * Using decltype (and getting it wrong) : `auto min(const T & a, decltype(a), b) -> decltype(a);`
 * Using some kind of type introducer  `auto min(const auto{T} & a, const T &b) -> const T&`
 
@@ -191,7 +191,7 @@ I had the following assumptions in mind as a starting point
 * The most straight-forward way to introduce a type name is to introduce a template parameter : `template <typename T> void f() { /* Do whatever with T*/ }`
 
 I was also thinking about Lambdas. Lambdas have an interesting history. They started by not having any form of syntax support in C++11.
-Then in C++17, they gained support for auto parameters. So in C++17, you can have `[](auto foo){}` but not `void foo(){}`.
+Then in C++17, they gained support for auto parameters. So in C++17, you can have `[](auto foo){}` but not `void bar(auto foo){}`.
 
 People then realized that giving a name to the type of the deduced parameter might be useful, so in C++20,  The following syntax was introduced.
 `[]<typename T>(T foo) {}`
@@ -626,7 +626,7 @@ Given the outcomes of numerous recent syntax-related discussions, I do expect th
 But the compiler would also have to do some look ahead to distinguish declarations from specialization with nested types.
 The following example was provided by Tony V.E. While unambiguous, it requires a bit more look ahead:
 
-```
+```cpp
 struct T { ... };
 Bar foo<typename T::type>(int t);
 ```
