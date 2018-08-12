@@ -162,7 +162,7 @@ Moving on...
 In C++20, a range is very simply something with a `begin()` and an `end()`, therefore a `span` is a range.
 We can verify that this is indeed the case:
 
-{{< ce_fragment >}}
+{{< ce_fragment compiler="gcc-concepts" >}}
 {{< ce_hidden >}}
 #include <stl2/detail/range/concepts.hpp>
 #include <vector>
@@ -180,7 +180,7 @@ While currently neither the notion of `contiguous iterator` or the `ContiguousRa
 ~~Weirdly, I could not find a proposal for `ContiguousRange`~~[^fix_contiguous_range]. Fortunately, it is implemented in `cmcstl2` so we can test for it.
 
 
-{{< ce_fragment >}}
+{{< ce_fragment compiler="gcc-concepts" >}}
 {{< ce_hidden >}}
 #include <stl2/detail/range/concepts.hpp>
 #include <gsl/span>
@@ -197,7 +197,7 @@ can implement it ourselves?
 
 For example, we could add some sugar coating over a pair of iterators:
 
-{{< ce >}}
+{{< ce compiler="gcc-concepts" >}}
 #include <gsl/span>
 #include <stl2/detail/range/concepts.hpp>
 #include <vector>
@@ -312,7 +312,7 @@ Because we are speaking about contiguous memory, there is an equivalent relation
 
 Given that, we can rewrite our span class
 
-{{< ce_fragment >}}
+{{< ce_fragment compiler="gcc-concepts"  >}}
 {{< ce_hidden >}}
 #include <gsl/span>
 #include <stl2/detail/range/concepts.hpp>
