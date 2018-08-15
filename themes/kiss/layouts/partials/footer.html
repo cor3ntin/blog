@@ -61,7 +61,7 @@
     let compilers = {
         "default" : {"compiler" : "g81", "options" : ""},
         "gcc-concepts" : {"compiler" : "g81", "options" : "-O1 -fconcepts -std=c++2a"},
-        "autonsdmi"    : {"compiler" : "clang_autonsdmi", "options" : "-O3 -fconcepts -std=c++2a"},
+        "autonsdmi"    : {"compiler" : "clang_autonsdmi", "options" : "-O3 -std=c++2a"},
     }
     const ce_nodes = document.querySelectorAll('.compiler_explorer_block');
     for (let i = 0, len = ce_nodes.length; i < len; i++) {
@@ -91,7 +91,7 @@
                 options : settings["options"],
                 compiler: settings["compiler"],
                 fontScale: 0.8,
-                libs: [{"name":"cmcstl2", "ver" :"trunk"},{"name" : "gsl", "ver":"100"}]
+                libs: [{"name":"cmcstl2", "ver" :"trunk"},{"name" : "gsl", "ver":"100"}, {"name":"rangesv3", "ver" :"trunk"}]
 
 
             }
