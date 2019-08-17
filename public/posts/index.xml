@@ -33,6 +33,17 @@ Computers are good at numbers. It&amp;rsquo;s the only thing they understand rea
     </item>
     
     <item>
+      <title>Parenthesis</title>
+      <link>https://cor3ntin.github.io/posts/parentheses/</link>
+      <pubDate>Tue, 26 Feb 2019 07:00:36 -1000</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/parentheses/</guid>
+      <description>foo();  This is foo. But what is foo? An astute reader may assume foo is a function.
+What kind of function? It is obviously not a virtual function. But it might be a function pointer. It might be a function object. It might even be a shiny post-modern lambda. Or the constructor of some class foo.
+It doesn&amp;rsquo;t matter. All these things amount to plain, old and boring functions.</description>
+    </item>
+    
+    <item>
       <title>San Diego Committee Meeting: A Trip Report</title>
       <link>https://cor3ntin.github.io/posts/sandiego/</link>
       <pubDate>Fri, 16 Nov 2018 13:42:44 +0100</pubDate>
