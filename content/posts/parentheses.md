@@ -1,5 +1,5 @@
 ---
-title: "Parenthesis"
+title: "Parentheses"
 date: 2019-02-26T07:00:36-10:00
 draft: true
 ---
@@ -44,13 +44,13 @@ But they expand to what amount to a token soup. They are blissfully unaware of C
 So there you have it. `foo` is either a function or a macro.
 Wait, is that it?
 
-A clever compiler may decide to _inline_ `foo` (this has little to do with the `inline` keyword).
+A clever compiler may decide to _inline_ `foo`.
 Inlining is a transformation such that the compiler will inject the body of the function directly inside callers as to avoid
 creating a stack frame, which is expensive. This is purely a compiler optimization, unobservable under the as-if rule.
 
 Yet, inlined functions expand as much as they are called. Can such a function be considered a macro?
 
-An even more clever compiler can further decide to evaluate to function at runtime if it is able and not to lazy to do so.
+An even more clever compiler can further decide to evaluate to function at compile-time if it is able and not to lazy to do so.
 This also falls under the _as-if_ rule. Now the compiler can get rid of both stack frame and runtime costs by _constant evaluating_ everything.
 
 Then there are `constexpr` functions.
@@ -90,7 +90,7 @@ One non-existing feature often discussed is `constexpr` parameters.
 You would write
 
 
-```
+```cpp
 void foo(constexpr int a);
 ```
 
@@ -100,12 +100,12 @@ such that `a` is evaluated at compile time. Note that, for historical reasons, `
 
 To be less confusing, less rewrite our function to:
 
-```
+```cpp
 void foo(consteval int a);
 ```
 
 Which beg the question: what is the difference between these two declarations?
-```
+```cpp
 void foo(consteval int a);
 
 template<auto a>
