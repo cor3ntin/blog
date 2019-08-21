@@ -6,34 +6,32 @@
     <description>Recent content in Posts on cor3ntin</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 17 Aug 2019 11:46:12 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 27 Apr 2019 16:18:53 +0200</lastBuildDate>
     
 	<atom:link href="https://cor3ntin.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>C&#43;&#43; &#39;s idea of text is ����</title>
-      <link>https://cor3ntin.github.io/posts/encoding/</link>
-      <pubDate>Sat, 17 Aug 2019 11:46:12 +0200</pubDate>
+      <title>Characters sets: A bad idea since the bronze age</title>
+      <link>https://cor3ntin.github.io/posts/characterset/</link>
+      <pubDate>Sat, 27 Apr 2019 16:18:53 +0200</pubDate>
       
-      <guid>https://cor3ntin.github.io/posts/encoding/</guid>
-      <description>Interestingly, writing was initially invented as a way to keep track of numbers. Words came much later.
-Computers are good at numbers. It&amp;rsquo;s the only thing they understand really. So text has to be represented as a sequence of numbers which are interpreted and ascribed meaning so that we can execute this program:
-#include &amp;lt;iostream&amp;gt;int main() { std::cout &amp;lt;&amp;lt; &amp;#34;Γειά σου Κόσμε&amp;#34;; }  Possibly, what the compiler sees looks like this:</description>
+      <guid>https://cor3ntin.github.io/posts/characterset/</guid>
+      <description>You who shall hereafter see this tablet, which I have written, or these sculptures, do not destroy them, but preserve them so long as you live!   In 522 BC, 𐎭𐎠𐎼𐎹𐎢𐏁 also known as Dārīus was king of the Persian Empire. Kings crave fame as they do power and so Darius (who the greek later called Δαρεῖος) had his henchmen carve his name in stone. One such stone is the Behistun Inscription, which is really more a mountain than a stone.</description>
     </item>
     
     <item>
-      <title>Kona : A trip report</title>
+      <title>Kona: A trip report</title>
       <link>https://cor3ntin.github.io/posts/kona2019/</link>
       <pubDate>Thu, 28 Feb 2019 14:11:03 +0100</pubDate>
       
       <guid>https://cor3ntin.github.io/posts/kona2019/</guid>
-      <description>I was lucky enough to participate to a third wg21 commitee meeting in a row, this time in Kona, Hawaii, a mere 13000 kilometers away.
-  Kona   As is tradition, Bryce and others wrote a rather thorough trip report and reddit and you should check it out. However, if you want to read more details about my experience and some of the proposals I find important, please read on (knowing that your time is limited, and doing so will leave less time to read other blog posts).</description>
+      <description>I was lucky enough to participate in a third wg21 committee meeting in a row, this time in Kona, Hawaii, a mere 13000 kilometers away.
+  Kona   As is tradition, Bryce and others wrote a rather thorough trip report on Reddit and you should check it out. However, if you want to read more details about my experience and some of the proposals I find important, please read on (knowing that your time is limited, and doing so will leave less time to read other blog posts).</description>
     </item>
     
     <item>
-      <title>Parenthesis</title>
+      <title>Parentheses</title>
       <link>https://cor3ntin.github.io/posts/parentheses/</link>
       <pubDate>Tue, 26 Feb 2019 07:00:36 -1000</pubDate>
       
@@ -41,6 +39,49 @@ Computers are good at numbers. It&amp;rsquo;s the only thing they understand rea
       <description>foo();  This is foo. But what is foo? An astute reader may assume foo is a function.
 What kind of function? It is obviously not a virtual function. But it might be a function pointer. It might be a function object. It might even be a shiny post-modern lambda. Or the constructor of some class foo.
 It doesn&amp;rsquo;t matter. All these things amount to plain, old and boring functions.</description>
+    </item>
+    
+    <item>
+      <title>What is C&#43;&#43; ?</title>
+      <link>https://cor3ntin.github.io/posts/what_is_cpp/</link>
+      <pubDate>Sun, 06 Jan 2019 10:06:24 +0100</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/what_is_cpp/</guid>
+      <description>These past few weeks have been quite difficult for me. I have therefore not followed closely the ongoing discussions about C++, ranges, game developers and iota.
+I&amp;rsquo;m afraid my current outlook on things is rather cynical and I&amp;rsquo;ve been told I might be too assertive and opinionated. So, rather than another exercise in quixotism, or a pointless opinion on how best name a function that creates a sequence, let me ask a few questions.</description>
+    </item>
+    
+    <item>
+      <title>Towards Better C&#43;&#43; Modules - Part 2: Modules naming</title>
+      <link>https://cor3ntin.github.io/posts/modules_naming/</link>
+      <pubDate>Thu, 06 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/modules_naming/</guid>
+      <description>In case you have been napping, in the last installment we talked about modules mapping, and so now we must talk about modules naming.
+You see, modules have names and names are hard. In this case, names serve to identify uniquely each module used through the program.
+The end of this article proposes to govern module naming through an official WG21 standing document and I would love your opinion. But be patient!</description>
+    </item>
+    
+    <item>
+      <title>Towards Better C&#43;&#43; Modules - Part 1: Modules mapping</title>
+      <link>https://cor3ntin.github.io/posts/modules_mapping/</link>
+      <pubDate>Mon, 26 Nov 2018 20:26:40 +0100</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/modules_mapping/</guid>
+      <description>In this blog post, we will talk about modules mapping. Modules mapping is a mechanism by which is a module name is associated with the source file that defines that module&amp;rsquo;s interface.
+A module is closed and self-contained. Which mean that for every module name there must exist one and only source file defining that module.
+Module mapping is not useful to the compiler per-say. By the time the compiler encounters an import declaration, the module binary interface must exist and be known to the compiler.</description>
+    </item>
+    
+    <item>
+      <title>RangeOf: A better span</title>
+      <link>https://cor3ntin.github.io/posts/rangeof/</link>
+      <pubDate>Sun, 25 Nov 2018 11:50:51 +0100</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/rangeof/</guid>
+      <description>I don&amp;rsquo;t like span.
+Since that article was posted, the committee improved span quite a bit by removing operator== and making it&amp;rsquo;s size() consistent with that of vector after a lot of discussions. And I mean a lot.
+What is span: 30 seconds refresher If you have N T laid out contiguously in memory, you can build a span&amp;lt;T&amp;gt; over them. Span being a value type you can move it around, copy it and so forth.</description>
     </item>
     
     <item>
@@ -52,6 +93,39 @@ It doesn&amp;rsquo;t matter. All these things amount to plain, old and boring fu
       <description>As I left Rapperswil earlier this year, I said very firmly that I would not go to the San Diego Meeting.
 Crossing an ocean to work on C++ 12 hours a day for a week is indeed madness.
 And so naturally, I found myself in a San Diego hotel straight from the 60s, to do some C++ for a week. With the exception of the author of this blog, all people there are incredibly smart and energetic, and so a lot of great work was done.</description>
+    </item>
+    
+    <item>
+      <title>Modules are not a tooling opportunity</title>
+      <link>https://cor3ntin.github.io/posts/modules/</link>
+      <pubDate>Wed, 31 Oct 2018 23:16:15 +0100</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/modules/</guid>
+      <description>C++ Modules are going through the standardization process and current plans would have them merged in the C++ Standard in time for C++20. They are a great language feature, offering a number of benefits over headers
+ They feel more modern They are much faster to parse They provide protections against macros They provide some protections against ODR violations.  I really can&amp;rsquo;t wait to be able to replace headers with them in my code bases.</description>
+    </item>
+    
+    <item>
+      <title>Translation units considered harmful ?</title>
+      <link>https://cor3ntin.github.io/posts/translation_units/</link>
+      <pubDate>Mon, 29 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/translation_units/</guid>
+      <description>Let say you have some struct square you want to compute the area of.
+struct square { int width; }
+You could of course do that:
+int area(square s) { return s.width * s.width; }
+But, your friend Tony told you to use more functions, so instead you do that
+int area(square s) { return width(s) * width(s); } int width(square s) { return s.width; }  area being the function you really care about it is defined first - after all, code reads from top to bottom.</description>
+    </item>
+    
+    <item>
+      <title>Commas</title>
+      <link>https://cor3ntin.github.io/posts/commas/</link>
+      <pubDate>Tue, 21 Aug 2018 23:08:53 +0200</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/commas/</guid>
+      <description></description>
     </item>
     
     <item>
@@ -90,6 +164,17 @@ And since then a new paper, P1141 - Yet another approach for constrained declara
       
       <guid>https://cor3ntin.github.io/posts/rapperswil/</guid>
       <description>This was my first committee meeting. I arrived Sunday morning at Jona, the next town over where I had a lovely AirBnB in a very nice, peaceful suburb. I settled to visit Rapperswil but met some people from Nvidia going to the meeting. So we naturally started to talk about C++. The meeting was to last 6 days and until the very end, we talked about C++, every minute of every hour.</description>
+    </item>
+    
+    <item>
+      <title>A Json Parser Part 1 : Reading a file</title>
+      <link>https://cor3ntin.github.io/posts/read_a_file/</link>
+      <pubDate>Wed, 23 May 2018 20:03:48 +0200</pubDate>
+      
+      <guid>https://cor3ntin.github.io/posts/read_a_file/</guid>
+      <description>The year is 2021. A rainy Sunday afternoon. It&amp;rsquo;s getting increasingly more difficult to ignore the looming shadow of The Great Rewrite.
+But you ran out of cacao and there is nothing on HBO. So you guzzle a fourth cup of coffee and decide to start a new project. In C++ of course. You sacrificed too much to reevaluate your life choices now.
+But you need to do something new.</description>
     </item>
     
     <item>

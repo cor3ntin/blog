@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>Parenthesis | cor3ntin</title>
+<title>Parentheses | cor3ntin</title>
 
 
 <link rel="stylesheet" href="/css/style.css"/><link rel='stylesheet' href='https://cor3ntin.github.io/custom.css'></head>
@@ -59,7 +59,7 @@
       
     </div>
     <h2 class="subtitle is-6">February 26, 2019</h2>
-    <h1 class="title">Parenthesis</h1>
+    <h1 class="title">Parentheses</h1>
     
     <div class="content">
       
@@ -97,13 +97,13 @@ Macros are powerful. They can have parameters too.</p>
 <p>So there you have it. <code>foo</code> is either a function or a macro.
 Wait, is that it?</p>
 
-<p>A clever compiler may decide to <em>inline</em> <code>foo</code> (this has little to do with the <code>inline</code> keyword).
+<p>A clever compiler may decide to <em>inline</em> <code>foo</code>.
 Inlining is a transformation such that the compiler will inject the body of the function directly inside callers as to avoid
 creating a stack frame, which is expensive. This is purely a compiler optimization, unobservable under the as-if rule.</p>
 
 <p>Yet, inlined functions expand as much as they are called. Can such a function be considered a macro?</p>
 
-<p>An even more clever compiler can further decide to evaluate to function at runtime if it is able and not to lazy to do so.
+<p>An even more clever compiler can further decide to evaluate to function at compile-time if it is able and not to lazy to do so.
 This also falls under the <em>as-if</em> rule. Now the compiler can get rid of both stack frame and runtime costs by <em>constant evaluating</em> everything.</p>
 
 <p>Then there are <code>constexpr</code> functions.
@@ -133,25 +133,19 @@ For example</p>
 </code></pre></div>
 <p>One non-existing feature often discussed is <code>constexpr</code> parameters.
 You would write</p>
-
-<pre><code>void foo(constexpr int a);
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">foo</span>(<span style="color:#080;font-weight:bold">constexpr</span> <span style="color:#888;font-weight:bold">int</span> a);
+</code></pre></div>
 <p>such that <code>a</code> is evaluated at compile time. Note that, for historical reasons, <code>constexpr</code> variables are always <em>constant-evaluated</em> and should probably be called <code>consteval</code> instead.</p>
 
 <p>To be less confusing, less rewrite our function to:</p>
-
-<pre><code>void foo(consteval int a);
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">foo</span>(consteval <span style="color:#888;font-weight:bold">int</span> a);
+</code></pre></div>
 <p>Which beg the question: what is the difference between these two declarations?</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">foo</span>(consteval <span style="color:#888;font-weight:bold">int</span> a);
 
-<pre><code>void foo(consteval int a);
-
-template&lt;auto a&gt;
-constexpr void foo();
-</code></pre>
-
+<span style="color:#080;font-weight:bold">template</span>&lt;<span style="color:#080;font-weight:bold">auto</span> a&gt;
+<span style="color:#080;font-weight:bold">constexpr</span> <span style="color:#888;font-weight:bold">void</span> foo();
+</code></pre></div>
 <p>Since <code>consteval</code> parameters are only an idea, we can only speculate.
 But I guess there is a couple of ways to implement them.</p>
 
@@ -257,7 +251,7 @@ can never expand to an unchecked token soup.</p>
     
   </svg>
 </i></a></span>
-        <span class="icon-share-span"><a href="https://news.ycombinator.com/submit?u=https%3a%2f%2fcor3ntin.github.io%2fposts%2fparentheses%2f&t=Parenthesis" target="_blank" title="Submit to Hacker News"><i class="icon-share icon-share-hn"><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'>
+        <span class="icon-share-span"><a href="https://news.ycombinator.com/submit?u=https%3a%2f%2fcor3ntin.github.io%2fposts%2fparentheses%2f&t=Parentheses" target="_blank" title="Submit to Hacker News"><i class="icon-share icon-share-hn"><svg viewbox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'>
     
     <path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/>
     
