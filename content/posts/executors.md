@@ -4,20 +4,19 @@ date: 2019-10-30T17:56:01+01:00
 draft: false
 ---
 
-# Universal Async Abstraction for C++.
-
-Executors - of which [P0443R11](https//wg21.link/P0443R11) is one of the latest iterations - is poised to be
+Executors - of which [P0443R11](https://wg21.link/P0443R11) is one of the latest iterations - is poised to be
 the most fundamental library addition to C++23.
 
 _But what is it about?_
 
-It is first and foremost a quest to find the most basic building blocs on top of which one could build asynchronous, concurrent and parallel code, whether it be
+It is first and foremost a quest to find the most basic building blocks on top of which one could build asynchronous, concurrent and parallel code, whether it be
 on a small chip or a supercomputer with thousands of CPUs and GPUs.
 
 This is not an easy task and has kept many experts
 and many companies busy for many years.
 
-An this is important work as it would allow, among other things
+This is important work as it would allow, among other things:
+
  * Parallel algorithms
  * Networking
  * Async I/O
@@ -28,19 +27,21 @@ An this is important work as it would allow, among other things
  * Heterogeneous computing
  * ...
 
-To compose nicely and share many algorithms. At least, that's the goal.
+To compose nicely and share many algorithms.
+
+At least, that's the goal.
 If `iterator`s are the basis of operations of algorithms (of which ranges and views are abstractions), what is the basis of operations of async programming?
 
 
 At this point, I should point out that despite doing my best not to mischaracterize anyone, and to be as technically accurate as I can, executors have a [very long
 history in the committee](https://www.youtube.com/watch?v=iYMfYdO0_OU) and I only took an interest in this whole thing recently - **I am a bull in a china shop, not a domain expert**.
 
-That being said, I will not exactly focus on [P0443R11](https//wg21.link/P0443R11), but on something I find a bit more refined, not yet in a paper.
+That being said, I will not exactly focus on [P0443R11](https://wg21.link/P0443R11), but on something I find a bit more refined, not yet in a paper.
 
 The result of that work will mostly be a few concepts,
 some customization points and a few algorithms to compose all of that.
 
-But first thing first.
+First thing first.
 
 ## Execution Context
 
@@ -48,17 +49,19 @@ An execution context represents the context in which you want to execute a piece
 That can, for example, be a thread pool, an event loop,
 Grand Central Dispatch, a GPU, a vectorization unit (although it's still unclear to me how that fits into the picture) or even the current thread - in which case we talk of _inline execution context_.
 
-[_Note: All of that is unrelated to asynchrony - even if most execution context will run code asynchronously, they might not._]
+[_Note: Because there are inline execution contexts,
+executing some work on an execution context does not
+systematically imply asynchrony._]
 
 
 ## Receiver
 
 A receiver represents the code we want to run on an execution context.
-In simplest terms, a function0
+In simplest terms, a function.
 But, an important point of the design of the executors proposal is to systematically provide error handling and error management so there are 3 functions we need to provide.
 
 ```cpp
-template <typename R, typename Error, typename.... Value>
+template <typename R, typename Error, typename... Value>
 concept receiver = requires(R &r Error... e, Value&&...v) {
     set_value(r, v...); // happy path
     set_error(r, e); // error
@@ -69,9 +72,9 @@ concept receiver = requires(R &r Error... e, Value&&...v) {
 
 **This is bad blog code - In reality `receiver` will be split in `receiver` and `receiver_of` to allow overloading `set_value`.**
 
-The standard will probably provide a receiver that wraps an `invokable`, throws on error and does nothing on cancellation.
+The standard will probably provide a receiver that wraps an `invocable`, throws on error and does nothing on cancellation.
 
-So maybe we could write something like that:
+So maybe we could write something like this:
 
 ```cpp
 fugazzi_async(execution_context, as_receiver([] {
@@ -89,6 +92,9 @@ allocated.
 But that is, to put it mildly, [not optimal](https://godbolt.org/z/PfVLT6).
 
 
+## Sender and Scheduler
+
+
 So what we can do instead is to ask the execution context to reserve a slot. Eric Niebler calls that a lazy future, the name chosen for the concept is `sender`.
 `sender` because it sends its result to a receiver.
 
@@ -99,8 +105,7 @@ but for the sake of genericity and because we probably don't want to expose our 
 we add a level of indirection (that always works).
 Also, I suppose that in some cases the execution context may never be materialized in the type system.
 
-`scheduler` represents a lightweight handle to an execution context.
-Its only purpose is to create `sender`s.
+`scheduler` represents a lightweight handle to an execution context. Its only purpose is to create `sender`s.
 
 _`execution context`_ -> `scheduler` -> `sender`.
 
@@ -110,6 +115,11 @@ thread_pool tp(std::thread::hardware_concurrency());
 auto scheduler = tp.scheduler();
 auto sender = scheduler.schedule();
 ```
+
+There are other ways to create `sender`s, for example
+`auto async_read(device, buffer) -> sender` can be a function that creates a sender able to enqueue a read operation on a reactor queue.
+
+Timers would also be senders, etc
 
 Once we have a sender, we can start thinking about doing some work. If you have been paying attention, so far we have done very little work.
 
@@ -128,7 +138,7 @@ If the _execution context_ of `my_sender` is, for example, a thread pool
 the receiver will be enqueued and then executed on a thread of that thread pool (by calling `my_receiver.set_value()`).
 
 And some work will finally be done.
-And that's it? According to [P0443R11](https//wg21.link/P0443R11), yes, pretty much.
+And that's it? According to [P0443R11](https://wg21.link/P0443R11), yes, pretty much.
 
 But there is a catch.
 
@@ -154,11 +164,13 @@ While this is fine for many people, it is not ideal and a deal-breaker for some.
 
 Is there a better way?
 Yes.
-But at this point we diverge from [P0443R11](https//wg21.link/P0443R11).
+But at this point we diverge from [P0443R11](https://wg21.link/P0443R11).
 Note that I invented nothing of what follows - there will be a paper about these ideas in the future.
 
 Everything can be improved by one more level of indirection,
 so let's do that.
+
+## Operation
 
 Instead of a `submit(sender, receiver)` that submits the work immediately, we can have a function that takes a sender, a receiver, and returns an aggregate of both, but do nothing else. Let's call that function `connect` :
 
@@ -217,11 +229,11 @@ visualization of how a regular thread pool keeps track
 of its state (enqueued work):
 
 
-<div style="text-align:center"><img height=300 src="executors/thread_pool.png" alt="Classic Thread pool"/></div>
+<div style="text-align:center"><img height=300 src="thread_pool.png" alt="Classic Thread pool"/></div>
 
 And what the `operation` machinery allows us to do:
 
-<div style="text-align:center"><img src="executors/operations.png" alt="Classic Thread pool"/></div>
+<div style="text-align:center"><img src="operations.png" alt="With operation a pool does not own its state"/></div>
 
 In the ideal case, there is no heap allocation and enqueuing/dequeuing work is setting a couple of pointers
 which means that the mutex that protects the work queue
@@ -230,7 +242,7 @@ of our thread pool is held for a very short time.
 Of course, sometimes you will need to enqueue many operations at once or not want to wait for your operation
 to complete.
 
-In these case, you will need an extra function to heap
+In these cases, you will need an extra function to heap
 allocate (or allocate with a custom allocator).
 The heap allocating function is called `spawn`.
 
@@ -248,17 +260,17 @@ that has to deal with allocators (allocators themselves
 probably need to be transferred to senders for composed operations).
 
 
-To recap things a bit, here is a diagram of the entiere thing:
+To recap things a bit, here is a diagram of the entire thing:
 
 
-<div style="text-align:center"><img src="executors/state.png" alt="Classic Thread pool"/></div>
+<div style="text-align:center"><img src="state.png" alt="State machine"/></div>
 
 ## Everything is a sender
 
 Thread pools usually have a `wait` method.
 
 But with the sender/receiver model, the thread pool can instead provide a method returning a sender and we can
-attach that sender to a receiver that will be invoked when the thread pool is empty, by the mean of a generic wait algorithm.
+attach that sender to a receiver that will be invoked when the thread pool is empty, by the means of a generic wait algorithm.
 
 ```cpp
 thread_pool p;
@@ -266,11 +278,12 @@ thread_pool p;
 wait(p.depleted());
 ```
 
-Many such algorithms can be providedm including:
+Many such algorithms can be provided, including:
+
  * `when_all`
  * `when_any`
  * `then` / `sequence`
- * An asyncronous version of `transform`
+ * An asynchronous version of `transform`
 
 
 These algorithms could be used to, for example, write a better future. But I haven't played with all of that yet.
@@ -278,7 +291,7 @@ These algorithms could be used to, for example, write a better future. But I hav
 
 # A coroutine to rule them all.
 
-Am aspect that I find critical when yet-to-come asynchronous facilities are provided in the standard, is that they have first-class coroutines support.
+One aspect that I find critical when yet-to-come asynchronous facilities are provided in the standard, is that they have first-class coroutines support.
 coroutines should be how 99% of people write asynchronous code.
 It's what they are made for and reduce significantly the
 change of blowing one's feet off.
@@ -303,35 +316,57 @@ The complete prototype implementation is about 100 loc. Not bad.
 
 and now we can write this:
 
-```cpp
-oneway_task task_with_coro(scheduler auto s) {
+
+{{< ce_fragment compiler="executors"  >}}
+{{< ce_hidden >}}
+#include <https://gist.githubusercontent.com/cor3ntin/14b9d30e07d48f5cdd13413c4fd96398/raw/f56dff4a94e053a41a16b66542e2322401f7fdbe/corio.hpp>
+
+using namespace cor3ntin::corio;
+
+{{< /ce_hidden >}}{{< ce_code >}}
+oneway_task task_with_coro(execution::scheduler auto s) {
     co_await s.schedule();
-    fmt::print("Hello"); //runs in thread pool
+    printf("Hello"); //runs in thread pool
 }
 
-void task_with_spawn(scheduler auto s) {
+void task_with_spawn(execution::scheduler auto s) {
     auto sender = s.schedule();
-    spawn(std::move(sender), as_receiver([]{
-        fmt::print("Hello");
+    execution::spawn(std::move(sender), as_receiver([]{
+        printf("Hello");
     }));
 }
 
 int main() {
-    thread_pool p(std::thread::hardware_concurrency());
+    static_thread_pool p(std::thread::hardware_concurrency());
     task_with_coro(p.scheduler());
     task_with_spawn(p.scheduler());
     wait(p.depleted());
 }
-```
 
-Pretty magic!
+{{< /ce_code >}}
+{{< /ce_fragment >}}
+
+Pretty magic![^1]
 
 In fact, this is possible because there is [almost](https://wg21.link/p1745r0) a 1/1 mapping between sender/receiver and promise/continuation of coroutines.
 
+
+<div style="text-align:center;width:100%">
+
+{{< tweet 1186760676938670080 >}}
+
+</div>
+
+&nbsp;
+&nbsp;
+
+15 years ago [Herb Sutter declared the free lunch over](http://www.gotw.ca/publications/concurrency-ddj.htm).
+But with the right set of primitives, we might just be able to have our cake and eat it too.
+
 # Customization points
 
-Almost all functions I mentionned are customization points,
-which mean that they can be specialized for specific sender, or receivers, including:
+Almost all functions I mentioned are customization points,
+which means that they can be specialized for specific sender, or receivers, including:
 
 
 * `set_value(receiver)`
@@ -348,14 +383,14 @@ The last CPO I have not yet mentioned is `bool is_blocking(sender)` that queries
 Without this, it is very easy to write a program that
 does not make any [forward progress](https://www.youtube.com/watch?v=FJIn1YhPJJc).
 
-The customization is based on [`tag_invoke`](https://wg21.link/p1895r0) a customization point object mechanism that allows type-erased objects to forward the CPO calls.
+The customizations are based on [`tag_invoke`](https://wg21.link/p1895r0) a customization point object mechanism that allows type-erased objects to forward the CPO calls.
 
 While a very neat idea, I cannot help but think this tries to provide a library solution to a [language problem](https://wg21.link/p1292r0).
 
 
 # Bulk execution and properties
 
-[P0443R11](https//wg21.link/P0443R11) also provides for bulk execution and a number of queryable properties to tune the behavior of executors...
+[P0443R11](https://wg21.link/P0443R11) also provides for bulk execution and a number of queryable properties to tune the behavior of executors...
 These are not areas I am very comfortable with for now and this article is getting long, stay tuned.
 
 I also want to explore in the future how we can leverage executors and `io_uring`, Grand Central Dispatch and Windows Thread Pools.
@@ -367,12 +402,12 @@ co_await socket.write("Hello");
 co_await socket.read(buffer);
 ```
 
-
 But here is that word again, `executor`.
+
 
 ## Executors
 
-[P0761](https:://wg21.link/P0761) explains
+[P0761](https://wg21.link/P0761) explains
 
 > An executor is an object associated with a specific execution context. It provides one or more execution
 functions for creating execution agents from a callable function object. [...] Executors themselves are the primary concern of our design.
@@ -389,11 +424,46 @@ void execute(execution_context ctx, invocable auto&& f) {
 
 So it might be that executors are the least important part of the Executor proposal.
 
-`operation` is the basis of operations.
+And what that means then is that...
+
+... `operation` is the basis of operations.
 
 
 ## Acknowledgments
 
 Many thanks to Lewis Baker, Eric Niebler, Kirk Shoop and David Hollman for patiently explaining their work.
 
-## Resources
+Saar Raz and Matt Godbolt for providing the tools that allow the examples in this article to compile.
+
+## Resources and References
+
+#### CppCon 2019: Eric Niebler, David Hollman “A Unifying Abstraction for Async in C++”
+
+{{< youtube id="tF-Nz4aRWAM" >}}
+
+#### C++Now 2019: David Hollman “The Ongoing Saga of ISO-C++ Executors”
+{{< youtube id="iYMfYdO0_OU" >}}
+
+### Papers
+
+[P1897](https://wg21.link/p1897) - Towards C++23 executors: An initial set of algorithms - Lee Howes
+
+[P1895](https://wg21.link/p1895) - tag_invoke: A general pattern for supporting customizable functions -Lewis Baker, Eric Niebler, Kirk Shoop
+
+[P1341](https://wg21.link/p1341) - Unifying Asynchronous APIs in the Standard Library - Lewis Baker
+
+[P1436](https://wg21.link/p1436) - Executor properties for affinity-based execution - Gordon Brown, Ruyman Reyes, Michael Wong, H. Carter Edwards, Thomas Rodgers, Mark Hoemmen
+
+[P1660](https://wg21.link/p1660) - A Compromise Executor Design Sketch (by Jared Hoberock, Michael Garland, Bryce Adelstein Lelbach, Michał Dominiak, Eric Niebler, Kirk Shoop, Lewis Baker, Lee Howes, David S. Hollman, Gordon Brown
+
+[P0443](https://wg21.link/p0443) -  A Unified Executors Proposal for C++ - Jared Hoberock, Michael Garland, Chris Kohlhoff, Chris Mysen, Carter Edwards, Gordon Brown, David Hollman, Lee Howes, Kirk Shoop, Eric Niebler
+
+### Implementations
+
+[Pushmi](https://github.com/facebook/folly/tree/master/folly/experimental/pushmi) - Facebook/folly's implementation of a previous iteration of the Sender/Receiver model.
+
+[Corio](https://github.com/cor3ntin/corio) - The very incomplete and immature project I started recently - the best way to understand something is to implement it.
+There is barely enough in there to support this blog post
+
+
+[^1]: Compiler Explorer does not support executing multi-thread code, but they are working on it. Thanks, Matt!
