@@ -4,8 +4,7 @@ date: 2019-10-30T17:56:01+01:00
 draft: false
 ---
 
-Executors - of which [P0443R11](https://wg21.link/P0443R11) is one of the latest iterations - is poised to be
-the most fundamental library addition to C++23.
+Executors - of which [P0443R11](https://wg21.link/P0443R11) is one of the latest iterations - is poised to be the most fundamental library addition to C++23.
 
 _But what is it about?_
 
