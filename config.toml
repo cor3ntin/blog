@@ -27,3 +27,6 @@ customCSS = ["custom.css"]
 
 [blackfriday]
   extension = ["footnotes"]
+
+[markup.goldmark.renderer]
+unsafe= true
