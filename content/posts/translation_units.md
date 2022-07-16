@@ -17,8 +17,7 @@ int area(square s) { return width(s) * width(s); }
 int width(square s) { return s.width; }
 ```
 
-`area` being the function you really care about it is defined first - after all, code reads from top to bottom.\\
-Or so argues [Clean Code](https://en.wikipedia.org/wiki/Robert_C._Martin).
+`area` being the function you really care about it is defined first - after all, code reads from top to bottom.
 
 As you may have guessed from the lack of `;` after the struct's closing bracket, the above code is written in D.
 I figure my readership isn't really into D, so maybe you would prefer some **Rust**?
@@ -45,7 +44,7 @@ struct Square { var width:Int = 0; }
 ```
 
 But of course, _you_ will worry about the overhead and will want the language the most performant (that's not a word).
-Eager to please and impress, let me copy the D code and add that oh-so-important comma.
+Eager to please and impress, let me copy the D code and add that oh-so-important semi-colon.
 
 ```cpp
 struct square { int width; };
@@ -58,7 +57,7 @@ Hum, wait, that doesn't work???!!!
 
 `error: 'width' was not declared in this scope`
 
-But, you stupid thing, it's _RIGHT THERE_.\\
+But, you stupid thing, it's _RIGHT THERE_.
 I declared everything in the global scope like a maniac, can't you see?
 
 Alas, the standard makes the compiler blind.
@@ -195,14 +194,14 @@ for itself whether the function was actually non-throwing.
 
 The Transactional Memory TS defines the notion of *transaction safe expression* as follow:
 
-> An expression is transaction-unsafe if it contains any of the following as a potentially-evaluated subexpression (3.2[basic.def.odr]):\\
+> An expression is transaction-unsafe if it contains any of the following as a potentially-evaluated subexpression (3.2[basic.def.odr]):
 
-> * an lvalue-to-rvalue conversion (4.1 [conv.lval]) applied to a volatile glvalue\\
-> * an expression that modifies an object through a volatile glvalue\\
-> * the creation of a temporary object of volatile-qualified type or with a subobject of volatile-qualified type\\
+> * an lvalue-to-rvalue conversion (4.1 [conv.lval]) applied to a volatile glvalue
+> * an expression that modifies an object through a volatile glvalue
+> * the creation of a temporary object of volatile-qualified type or with a subobject of volatile-qualified type
 > * a function call (5.2.2 expr.call) whose postfix-expression is an id-expression that names a non-virtual
-function that is not transaction-safe\\
-> * an implicit call of a non-virtual function that is not transaction-safe\\
+function that is not transaction-safe
+> * an implicit call of a non-virtual function that is not transaction-safe
 > * any other **call of a function, where the function type is not "transaction_safe function"**
 
 (Emphasis mine)

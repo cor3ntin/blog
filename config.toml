@@ -9,7 +9,7 @@ enableRobotsTXT = true
 pygmentsCodeFences = true
 pygmentsStyle = "pastie"
 googleAnalytics = "UA-119011218-1"
-disqusShortname="cor3ntin"
+# disqusShortname="cor3ntin"
 
 [params.social]
 
