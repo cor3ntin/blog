@@ -4,6 +4,11 @@ date: 2022-07-16T10:21:04+02:00
 draft: false
 ---
 
+<p style="display:none">
+C++ is not done yet.
+</p>
+<!--more-->
+
 <script>
 
 function shuffle(array) {
@@ -23,7 +28,7 @@ function shuffle_items() {
 }
 
 window.onload = (event) => {
-//  shuffle_items();
+ shuffle_items();
 };
 
 </script>

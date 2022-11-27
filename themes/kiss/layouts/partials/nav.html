@@ -17,7 +17,7 @@
           </a>
           {{- end -}}
           {{- end -}}
-          <a class="level-item" aria-label="rss" href='{{ .RSSLink }}' target='_blank' rel='noopener'>
+          <a class="level-item" aria-label="rss" href='{{ with .OutputFormats.Get "RSS" }}{{ .RelPermalink }}{{ end }}' target='_blank' rel='noopener'>
             <span class="icon">
                 <i class>
                     {{- partial "svg/icons" "rss" -}}
