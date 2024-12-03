@@ -352,7 +352,7 @@ In fact, this is possible because there is [almost](https://wg21.link/p1745r0) a
 
 <div style="text-align:center;width:100%">
 
-{{< tweet 1186760676938670080 >}}
+{{< tweet user=foo id=1186760676938670080 >}}
 
 </div>
 

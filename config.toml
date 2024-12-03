@@ -28,5 +28,9 @@ customCSS = ["custom.css"]
 [blackfriday]
   extension = ["footnotes"]
 
-[markup.goldmark.renderer]
-unsafe= true
+[markup]
+  defaultMarkdownHandler = 'goldmark'
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.goldmark.extensions]
+    footnote = true

@@ -131,7 +131,7 @@ Concepts are informed by concrete types and how they are used, they cannot be pu
 
 So, it would seem that if the STL is to have concepts, it need algorithms.
 
-{{< tweet 990390059579789312 >}}
+{{< tweet user=foo id=990390059579789312 >}}
 
 Good algorithms are agnostic of domain-specific knowledge and can be used in the widest variety of situations.
 Algorithms are not useful to people who write games, or people who make microcontrollers, they are useful to people who write C++.
@@ -272,7 +272,7 @@ Being part of the SG-16 Unicode study group, I know how hard it is to build a co
 And so, if the domain knowledge is concentrated in the mind of the author and a few people,
 we come back to the question we started with: Is the value of a component in its implementation or its specification?
 
-{{< tweet 1306113740572516352 >}}
+{{< tweet user="foo" id=1306113740572516352 >}}
 
 It is definitively a difficult question to answer, what is clear however is that WG21's ability to deliver a richer STL within the bound of the current
 modus operandi simply does not scale.

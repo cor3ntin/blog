@@ -219,7 +219,7 @@ And worse, open any C header, you will soon find a bunch of `#ifdef __cplusplus`
 That's right, C++ compatibility often requires C developers a lot of work.
 Compatibility was a mirage all this time. I am remembered of this tweet:
 
-{{< tweet 1224413742667988992 >}}
+{{< tweet user="foo" id=1224413742667988992 >}}
 
 
 ## Where do we go from there?

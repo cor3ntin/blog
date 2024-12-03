@@ -136,7 +136,7 @@ My interpretation is that the committee wants its cake and eat it
 too. Which is not possible.
 
 <!-- https://twitter.com/blelbach/status/1228962495865507840 -->
-{{< tweet 1228962495865507840 >}}
+{{< tweet user="blelbach" id="1228962495865507840" >}}
 
 Stability and ABI ultimately, given a large enough period, run afoul of one another.
 <br>
@@ -199,7 +199,7 @@ If people don't use the standard library, they have no interest in improving it.
 Performance is what keeps the standard library alive. Without performance, a lot less energy is going to be pored into it.
 
 <!-- https://twitter.com/TitusWinters/status/1224377740306132998 -->
-{{< tweet 1224377740306132998 >}}
+{{< tweet user="TitusWinters" id="1224377740306132998" >}}
 
 
 ## How could the committee address ABI-breaking proposals?
@@ -299,7 +299,7 @@ the state-of-the-art a decade ago, which we know can be improved upon dramatical
 But of course, we will make many, many mistakes.
 
 <!-- https://twitter.com/hyrumwright/status/1228833676240146434 -->
-{{< tweet 1228833676240146434 >}}
+{{< tweet user=hyrumwright id=1228833676240146434 >}}
 
 Some mistakes are made conscientiously as being the right trade-offs at the time
 while others will remain hidden for years.
